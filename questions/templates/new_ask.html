@@ -1,0 +1,33 @@
+{% extends "login.html" %}
+
+{% block OwnLinks %}
+  {% load static %}
+  <link href="{% static "css/askme.css" %}" rel="stylesheet">
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static "/css/bender.css" %}">
+{% endblock %}
+
+{% block NamePage %}{% endblock %}
+
+{% block userPost %}
+  <h3 class="mb-3">New Questions</h3>
+  <form class="needs-validation" novalidate="">
+    <div class="mb-3">
+      <label for="title">Title</label>
+      <input type="title" class="form-control" id="title">
+    </div>
+    <div class="form-group">
+     <label for="text">Text</label>
+     <textarea class="form-control" name="text" rows="3"></textarea>
+    </div>
+    <div class="mb-3">
+      <label for="tags">Tags</label>
+      <input type="text" class="form-control" id="tags" required="">
+      <div class="invalid-feedback">
+        Please enter tags.
+      </div>
+    </div>
+    <hr class="mb-4">
+    <button class="btn btn-primary btn-lg btn-block" type="submit">Ask!</button>
+  </form>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "tag_find.html" %}
+
+{% block OwnLinks %}
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static "/css/settings.css" %}">
+{% endblock %}
+ 
+{% block NamePage %}
+  <div class="pb-3 mb-4 font-italic border-bottom row">
+        <h3 class="col-4">Settings: Dr.Pepper</h3>
+  </div>
+{% endblock %}
+
+{% block userPost %}
+  <form class="needs-validation" novalidate="">
+    <div class="mb-3">
+      <label for="login">Login</label>
+      <input type="text" class="form-control" id="login" value="dr_pepper">
+    </div>
+    <div class="form-group">
+     <label for="email">Email</label>
+     <input type="email" class="form-control" name="email" rows="3" value="dr.pepper@yandex.ru"></input>
+    </div>
+    <div class="mb-3">
+      <label for="nick">Nick Name</label>
+      <input type="text" class="form-control" id="nick" required="" value="Dr. Pepper">
+    </div>
+    <div class="md-3 container FileDiv">
+      <div class="row">
+        <div class="col-md-5">
+          {% load static %}
+          <img src="{% static "/img/Empty2.jpg" %}" width="150" height="150">
+          
+        </div>
+        <div class="col-md-7 FileInputTeg">
+          <input type="file" name="file" value="img">
+        </div>
+      </div>
+    </div>
+    <hr class="mb-4">
+    <button class="btn btn-primary btn-lg btn-block" type="submit">Save</button>
+  </form>
+{% endblock %}
+
+{% block listing %}{% endblock %}

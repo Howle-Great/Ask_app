@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+      {% block links %}
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+      {% endblock %}
+      {% block OwnLinks %}
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static "/css/bender.css" %}">
+      {% endblock %}
+  </head>
+  <body>
+    {% block title %}
+      <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+          <a class="navbar-brand col-md-2" href="{% url 'questions' %}">AckMe</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarCollapse col-md-1">
+            <form class="form-inline mt-2 mt-md-0">
+              <input class="form-control mr-sm-2 col-md-8" type="text" placeholder="Search" aria-label="Search">
+              <button class="btn btn-outline-success my-2 my-sm-0"  type="submit">ASK!</button>
+            </form>
+          </div>
+          {% block Userfoto %}
+            <div class="col-md-1">
+              <a class="navbar" href="{% url 'setting' %}">
+               {% load static %}
+               <img src="{% static "/img/img_empty.png" %} " widght="50" height="40">
+             </a>
+
+            </div>
+            <div class="row col-md-3" style="color: white;">
+              <div class="col-sm-9">
+                Name
+                <div class="row">
+                  <div class="col-8 col-sm-6">
+                    <a href="{% url 'setting' %}">settings</a>
+                  </div>
+                  <div class="col-4 col-sm-6">
+                    <a href="{% url 'question' %}">log out</a>
+                  </div>
+                </div>
+              </div>
+          </div>
+        {% endblock %}
+      </nav>
+    {% endblock %}
+    {% block contant %}
+      <div class="container">
+       <div class="row">
+         <div class="col-md-9 blog-main my_blog">
+            {% block NamePage %}
+              <div class="pb-3 mb-4 font-italic border-bottom row">
+                    <h3 class="col-4">Tag: Bender</h3>
+              </div>
+            {% endblock NamePage %}
+
+
+            {% block userPost %}
+              <!-- {% for q in questions %} -->
+                <div class="blog-post row Post">
+                  <div class="avatarka_in_post col-md-2 ">
+                    {% load static %}
+                    <a href="{% url 'tag' %}"><img src="{% static "/img/Empty2.jpg" %}" width="90" height="90"></a>
+                    <select name="likes" class="likes">
+                                        <option selected="">5</option>
+                                        <option>4</option>
+                                        <option>3</option>
+                                        <option>2</option>
+                                        <option>1</option>
+                    </select>
+                  </div>
+                <div class="Context_Post col-md-9">
+                  <h2 class="blog-post-title"></h2>
+                  <p><!-- {{q.text}} --></p>
+                  {% block BottomOnePost %}
+                    <div class="blog-post-meta row Post_title_bottom">
+                      <a href="{% url 'questions' %}" class="">answer (3)</a>
+                      <div class="col-9">
+                        <p>Tags: <a href="{% url 'tag' %}">black-jack</a> <a href="{% url 'tag' %}">bender</a></p>
+                      </div>
+                    </div>
+                  {% endblock BottomOnePost %}
+                </div>
+              </div>
+
+        {% block PostEnd %}
+        {% endblock PostEnd %}
+
+
+        <!-- {% endfor %} -->
+      {% endblock userPost %}
+              
+        </div>
+        {% block Asidemenu %}
+          <aside class="col-md-3 blog-sidebar my_blog">
+            <div class="p-3 mb-3">
+              <div class="p-3">
+                <h4>Popular Tags</h4>
+                <div class="row">
+                  <a href="{% url 'tag' %}" class="Pop_tags">perl</a>
+                  <a href="{% url 'tag' %}" class="Pop_tags">Golang</a>
+                  <a href="{% url 'tag' %}" class="Pop_tags">Python</a>
+                  <a href="{% url 'tag' %}" class="Pop_tags">SQL</a>
+                  <a href="{% url 'tag' %}" class="Pop_tags">Object-C</a>
+                </div>
+              </div>
+              <div class="p-3">
+                <h4 class="font-italic">Best Members</h4>
+                <ol class="list-unstyled">
+                  <li><a href="{% url 'tag' %}">Qwerty</a></li>
+                  <li><a href="{% url 'tag' %}">Qwant</a></li>
+                  <li><a href="{% url 'tag' %}">Dreft</a></li>
+                </ol>
+              </div>
+            </div>
+          </aside>
+        {% endblock Asidemenu %}
+      </div>
+      </div>
+    {% endblock contant%}
+    {% block listing %}
+      {% include "paginate.html" %}
+
+      {# <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center">
+          <li class="page-item disabled">
+            <a class="page-link" href="#" aria-label="Previous">
+              <span aria-hidden="true">&laquo;</span>
+              <span class="sr-only">Previous</span>
+            </a>
+          </li>
+          <li class="page-item"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item">
+            <a class="page-link" href="{% url 'tag' %}" aria-label="Next">
+              <span aria-hidden="true">&raquo;</span>
+              <span class="sr-only">Next</span>
+            </a>
+          </li>
+        </ul>
+      </nav> #}
+      <!-- {#% include "paginate.html" %#} -->
+    {% endblock listing%}
+  </body>
+</html>

@@ -1,0 +1,28 @@
+.my_blog{
+	/*display: block;*/
+	margin-top: 95px;
+}
+.likes{
+	margin-top: 20px;
+}
+.Post{
+	
+    border: 1px solid black;
+    border-radius: 10px 10px 10px 10px;
+    margin-left: 20px;
+    padding:10px;
+    margin-bottom: 10px;
+}
+.Post_title_bottom{
+	margin-left: 10px;
+	font-family: "sans-serif";
+}
+.Top_Post {
+	margin-left: 30px;
+}
+.Pop_tags {
+	padding: 5px;
+}
+.Hot_qeue {
+	margin-top: 7px;
+}

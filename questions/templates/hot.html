@@ -1,0 +1,38 @@
+{% extends "tag_find.html" %}
+
+{% block NamePage %}
+  <div class="pb-3 mb-4 font-italic border-bottom row">
+        <h3 class="col-4">Hotest</h3>
+  </div>
+{% endblock NamePage %}
+
+{% block userPost %}
+    {% for obj in questions %}
+    	
+        <div class="blog-post row Post">
+          <div class="avatarka_in_post col-md-2 ">
+            {% load static %}
+            <a href="{% url 'tag' %}"><img src="{% static "/img/Empty2.jpg" %}" width="90" height="90"></a>
+            <select name="likes" class="likes">
+                                <option selected="">5</option>
+                                <option>4</option>
+                                <option>3</option>
+                                <option>2</option>
+                                <option>1</option>
+            </select>
+          </div>
+        <div class="Context_Post col-md-9">
+          <h2 class="blog-post-title"></h2>
+          <p>{{obj.text}}</p>
+          {% block BottomOnePost %}
+            <div class="blog-post-meta row Post_title_bottom">
+              <a href="{% url 'questions' %}" class="">answer (3)</a>
+              <div class="col-9">
+                <p>Tags: <a href="{% url 'tag' %}">black-jack</a> <a href="{% url 'tag' %}">bender</a></p>
+              </div>
+            </div>
+          {% endblock BottomOnePost %}
+        </div>
+      </div>
+    {% endfor %}
+{% endblock userPost %}
