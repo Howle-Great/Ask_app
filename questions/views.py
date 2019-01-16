@@ -22,11 +22,22 @@ class NewQuestions(TemplateView):
 # 	"""docstring for Hot"""
 # 	template_name = "hot.html"
 
-def hot(request, page=1):
+def hot(request, id=1):
 	"""docstring for Main_menu"""
 	return render(request, "hot.html", {
 		"questions": paginate(request, objects_list = models.Question.objects.get_hot()),
 		})
+def profile(request, id):
+	return render(request, "user_settings.html", {
+		"profile": get_object_or_404(models.CustomUser, pk=id),
+		})
+
+def user_questions(request, id):
+	"""docstring for Main_menu"""
+	return render(request, "user_question.html", {
+		"questions": paginate(request, objects_list = models.Question.objects.get_by_id(id)),
+		})
+
 
 class Questions(TemplateView):
 	"""docstring for Hot"""

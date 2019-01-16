@@ -1,10 +1,8 @@
 {% extends "tag_find.html" %}
 
-{% block NamePage %}
-  <div class="pb-3 mb-4 font-italic border-bottom row">
-        <h3 class="col-4">Hotest</h3>
-  </div>
-{% endblock NamePage %}
+{% block NamePage_title %}
+    Users Questions
+{% endblock NamePage_title %}
 
 {% block userPost %}
     {% for obj in questions %}

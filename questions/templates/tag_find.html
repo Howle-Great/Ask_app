@@ -29,10 +29,9 @@
           {% block Userfoto %}
             <div class="col-md-1">
               <a class="navbar" href="{% url 'setting' %}">
-               {% load static %}
-               <img src="{% static "/img/img_empty.png" %} " widght="50" height="40">
-             </a>
-
+                {% load static %}
+                <img src="{% static "/img/img_empty.png" %} " widght="50" height="40">
+              </a>
             </div>
             <div class="row col-md-3" style="color: white;">
               <div class="col-sm-9">
@@ -46,17 +45,21 @@
                   </div>
                 </div>
               </div>
-          </div>
-        {% endblock %}
+            </div>
+          {% endblock Userfoto %}
       </nav>
-    {% endblock %}
+    {% endblock title %}
     {% block contant %}
       <div class="container">
        <div class="row">
          <div class="col-md-9 blog-main my_blog">
             {% block NamePage %}
               <div class="pb-3 mb-4 font-italic border-bottom row">
-                    <h3 class="col-4">Tag: Bender</h3>
+                <h3 class="col-4">
+                  {% block NamePage_title %}
+                    Tag: Bender
+                  {% endblock NamePage_title %}
+                </h3>
               </div>
             {% endblock NamePage %}
 
@@ -124,10 +127,11 @@
       </div>
       </div>
     {% endblock contant%}
-    {% block listing %}
+    {% block paginate %}
+
       {% include "paginate.html" %}
 
-      {# <nav aria-label="Page navigation example">
+      <!--{# <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center">
           <li class="page-item disabled">
             <a class="page-link" href="#" aria-label="Previous">
@@ -147,6 +151,6 @@
         </ul>
       </nav> #}
       <!-- {#% include "paginate.html" %#} -->
-    {% endblock listing%}
+    {% endblock paginate%}
   </body>
 </html>
