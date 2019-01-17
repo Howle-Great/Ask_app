@@ -5,31 +5,49 @@
         <h3 class="col-4">Hotest</h3>
   </div>
 {% endblock NamePage %}
-
 {% block userPost %}
+{% load static %}
+<link rel="stylesheet" href="{% static "/css/Like.css" %}">
     {% for obj in questions %}
-    	
-        <div class="blog-post row Post">
+        <div class="blog-post row Post box-shadow">
           <div class="avatarka_in_post col-md-2 ">
             {% load static %}
             <a href="{% url 'user' id=obj.author.id %}">
-            	<img src="{% static "/img/Empty2.jpg" %}" width="90" height="90">
+            	{% if obj.author.upload %}
+            		<img src="{{MEDIA_URL}}{{obj.author.upload.url}}" width="90" height="90">   <!--/static/media/-->
+            	{% else %}
+            	    <img src="{% static "/img/Empty2.jpg" %}" width="90" height="90">
+            	{% endif %}
             	{# {{obj.autor}} #}
             </a>
-            <select name="likes" class="likes">
-                                <option selected="">5</option>
-                                <option>4</option>
-                                <option>3</option>
-                                <option>2</option>
-                                <option>1</option>
-            </select>
+			<div class="container Like_rating_move">
+				<div class="row">
+					<div class="card-text align-middle col-md h6 Like_rating_mv">
+						{{obj.rating}}
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-2">
+						<a href="like">
+							<img src="{% static "/img/Like.jpg" %}" alt="" width="20" height="20">
+						</a>
+					</div>
+					<div class="col-md-2">
+						<a href="dislike">
+							<img src="{% static "/img/Dislike.jpg" %}" alt="" width="20" height="20">
+						</a>
+					</div>
+				</div>
+			</div>
           </div>
         <div class="Context_Post col-md-9">
-          <h2 class="blog-post-title">{{obj.title}}</h2>
-          <p>{{obj.text}}</p>
+          <a href="{% url 'question_page' id=obj.author.id %}">
+          	<h2 class="blog-post-title">{{obj.title}}</h2>
+          </a>
+          <p>{{obj.text | truncatechars:200}}</p>
           {% block BottomOnePost %}
             <div class="blog-post-meta row Post_title_bottom">
-              <a href="{% url 'user' id=obj.author.id %}" class="">{{obj.author}}</a>
+              <a href="{% url 'user' id=obj.author.id %}" class="">{{obj.autor}}</a>
               <div class="col-9">
             	{% if obj.tags %}
             		<p>Теги:

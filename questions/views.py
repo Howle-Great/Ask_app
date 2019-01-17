@@ -22,22 +22,47 @@ class NewQuestions(TemplateView):
 # 	"""docstring for Hot"""
 # 	template_name = "hot.html"
 
-def hot(request, id=1):
+def hot(request, id):
 	"""docstring for Main_menu"""
 	return render(request, "hot.html", {
+		'users' : paginate(request, User.objects.by_rating()),
+		'tags' : paginate(request, Tag.objects.hottest())
 		"questions": paginate(request, objects_list = models.Question.objects.get_hot()),
+		"page_objects": paginate(request, objects_list = models.Question.objects.get_hot()),
 		})
 def profile(request, id):
 	return render(request, "user_settings.html", {
+		'users' : paginate(request, User.objects.by_rating()),
+		'tags' : paginate(request, Tag.objects.hottest())
 		"profile": get_object_or_404(models.CustomUser, pk=id),
 		})
 
-def user_questions(request, id):
+def user_questions(request, id):	#Переделай вид страницы! не красиво!
 	"""docstring for Main_menu"""
 	return render(request, "user_question.html", {
-		"questions": paginate(request, objects_list = models.Question.objects.get_by_id(id)),
+		'users' : paginate(request, User.objects.by_rating()),
+		'tags' : paginate(request, Tag.objects.hottest())
+		"questions": paginate(request, objects_list = models.Question.objects.get_by_user(id)),
+		"page_objects": paginate(request, objects_list = models.Question.objects.get_hot()),
 		})
 
+def question_page(request, id):
+	return render(request, "questions.html", {
+		'users' : paginate(request, User.objects.by_rating()),
+		'tags' : paginate(request, Tag.objects.hottest())
+		"question": get_object_or_404(models.Question, pk=id) ,
+		"answers": paginate(request, objects_list = models.Answer.objects.get_hot_for_answer(id)),
+		"page_objects": paginate(request, objects_list = models.Answer.objects.get_hot_for_answer(id)),
+		})
+
+def tag(request, id):
+    return render(request, 'question/tag_find.html', {
+        'users' : paginate(request, User.objects.by_rating()),
+        'tags' : paginate(request, Tag.objects.hottest()),
+        'tag' : get_object_or_404(models.Tag, pk=id) ,
+        'questions': paginate(request, Question.objects.get_by_tag(tag_id=id)),
+        "page_objects": paginate(request, objects_list = models.Question.objects.get_by_tag(tag_id=id)),
+    })
 
 class Questions(TemplateView):
 	"""docstring for Hot"""
@@ -61,7 +86,7 @@ class NewAsk(TemplateView):
 
 
 def paginate(request, objects_list):
-    paginator = Paginator(objects_list, 4)
+    paginator = Paginator(objects_list, 10)
     page = request.GET.get('page')
     try:
         objects = paginator.page(page)

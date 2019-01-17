@@ -11,7 +11,11 @@
           <div class="avatarka_in_post col-md-2 ">
             {% load static %}
             <a href="{% url 'user' id=obj.author.id %}">
-            	<img src="{% static "/img/Empty2.jpg" %}" width="90" height="90">
+              {% if obj.author.upload %}
+                <img src="{{MEDIA_URL}}{{obj.author.upload.url}}" width="90" height="90">   <!--/static/media/-->
+              {% else %}
+                  <img src="{% static "/img/Empty2.jpg" %}" width="90" height="90">
+              {% endif %}
             	{# {{obj.autor}} #}
             </a>
             <select name="likes" class="likes">
@@ -23,7 +27,9 @@
             </select>
           </div>
         <div class="Context_Post col-md-9">
-          <h2 class="blog-post-title">{{obj.title}}</h2>
+          <a href="{% url 'question_page' id=obj.author.id %}">
+            <h2 class="blog-post-title">{{obj.title}}</h2>
+          </a>
           <p>{{obj.text}}</p>
           {% block BottomOnePost %}
             <div class="blog-post-meta row Post_title_bottom">

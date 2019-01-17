@@ -1,6 +1,8 @@
+from django.contrib import admin
 from django.urls import path
-
-from . import views
+from questions import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
 	path('', views.TagPage.as_view(), name="tag"),
@@ -15,4 +17,15 @@ urlpatterns = [
 	# In working
 	path('user/<int:id>/', views.profile, name="user"),
 	path('user/questions/<int:id>/', views.user_questions, name='user_questions'),
+	path('question_page/<int:id>', views.question_page, name='question_page'),
+
+	path('tag/<int:id>', views.tag, name='tag'),
+
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+
+

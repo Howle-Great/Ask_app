@@ -8,5 +8,8 @@ admin.site.register(Question)
 admin.site.register(Answer)
 admin.site.register(Tag)
 admin.site.register(CustomUser)
+list_display = ['upload', 'upload_img',]
+readonly_fields = ['image_img',]
+fields = ['upload', 'upload_img',]
 # admin.site.register(Post)
 

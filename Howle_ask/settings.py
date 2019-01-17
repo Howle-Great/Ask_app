@@ -25,7 +25,7 @@ SECRET_KEY = '*u7j(&)9idpl_z2t!l1^usij@^52axj@^0*$sr-+l1c_j*pr7m'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1',]
 
 
 # Application definition
@@ -118,10 +118,13 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/dev/howto/static-files/
+MEDIA_URL = '/'
+MEDIA_ROOT = os.path.join(BASE_DIR, '')
 
+#STATIC_ROOT = '/Users/howle/prog/Web/W_Texn/Homework/3/Howle_ask/static/'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "questions/static"),
+    os.path.join(BASE_DIR, "static"),
 ]
 
 AUTH_USER_MODEL = 'questions.CustomUser'

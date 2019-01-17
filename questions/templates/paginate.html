@@ -1,21 +1,20 @@
-{% if blog_list.has_other_pages %}
-  <ul class="pagination">
-    {% if blog_list.has_previous %}
-      <li><a href="?page={{ blog_list.previous_page_number }}">&laquo;</a></li>
-    {% else %}
-      <li class="disabled"><span>&laquo;</span></li>
-    {% endif %}
-    {% for i in blog_list.paginator.page_range %}
-      {% if blog_list.number == i %}
-        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-      {% else %}
-        <li><a href="?page={{ i }}">{{ i }}</a></li>
-      {% endif %}
-    {% endfor %}
-    {% if users.has_next %}
-      <li><a href="?page={{ blog_list.next_page_number }}">&raquo;</a></li>
-    {% else %}
-      <li class="disabled"><span>&raquo;</span></li>
-    {% endif %}
-  </ul>
-{% endif %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static "/css/paginate.css" %}">
+<div class="container">
+  <div class="row">
+    <div class="pagination center">
+        {% if page_objects.has_previous %}
+            <a class="page-link" href="?page={{ page_objects.previous_page_number }}"><-</a>
+        {% endif %}
+
+        <div class="page-link current">
+            Page {{ page_objects.number }} of {{ page_objects.paginator.num_pages }}.
+        </div>
+
+        {% if page_objects.has_next %}
+            <a class="page-link" href="?page={{ page_objects.next_page_number }}">-></a>
+        {% endif %}
+    </span>
+</div>
+  </div>
+</div>

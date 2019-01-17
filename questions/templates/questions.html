@@ -19,14 +19,20 @@
     </div>
   </div>
 {% endblock %}
-{{question.}}
+
 {% block NamePage %}
   <div class="Top_Post">
     <div class="pb-3 mb-4 font-italic border-bottom row">
         <div class="blog-post row ">
           <div class="avatarka_in_post col-md-4 ">
             {% load static %}
-            <a href="{% url 'question' %}"><img src="{% static "/img/Empty2.jpg" %}" width="140" height="140"></a><br>
+            <a href="{% url 'user' id=question.author.id %}">
+              {% if question.author.upload %}
+                <img src="{{MEDIA_URL}}{{question.author.upload.url}}" width="140" height="140">   <!--/static/media/-->
+              {% else %}
+                  <img src="{% static "/img/Empty2.jpg" %}" width="140" height="140">
+              {% endif %}
+            </a><br>
             <select name="likes" class="likes">
                                 <option selected="">5</option>
                                 <option>4</option>
@@ -36,10 +42,20 @@
             </select>
           </div>
           <div class="Context_Post col-md-8">
-            <h2 class="blog-post-title">{{questionOne.title}}</h2>
-            <p>{{questionOne.text}}Равным образом постоянный количественный рост и сфера нашей активности позволяет выполнять важные задания по разработке системы обучения кадров, соответствует насущным потребностям. Значимость этих проблем настолько очевидна, что укрепление и развитие структуры позволяет выполнять важные задания по разработке направлений прогрессивного развития. Разнообразный и богатый опыт новая модель организационной деятельности требуют от нас анализа модели развития. Товарищи! консультация с широким активом способствует подготовки и реализации системы обучения кадров, соответствует насущным потребностям. С другой стороны начало повседневной работы по формированию позиции способствует подготовки и реализации позиций, занимаемых участниками в отношении поставленных задач. Равным образом сложившаяся структура организации обеспечивает широкому кругу (специалистов) участие в формировании новых предложений.</p>
+            <h2 class="blog-post-title">{{question.title}}</h2>
+            <p>{{question.text}}</p>
             <div class="blog-post-meta row Post_title_bottom_up">
-                <p>Tags: <a href="#">black-jack</a> <a href="#">bender</a></p>
+              {% if question.tags %}
+                <p>Теги:
+                  {% for t in question.tags.all %}
+                    <a href="">
+                      {{t}}
+                    </a>
+                  {% endfor %}
+                </p>
+              {% else %}
+                {# Тегов нет #}
+              {% endif %}
             </div>
           </div>
         </div>
@@ -47,33 +63,39 @@
   </div>
 {% endblock %}
 {% block userPost %}
-                    {#% for q in questions %#}
-                      <div class="blog-post row Post">
-                      <div class="avatarka_in_post col-md-2 ">
-                        {% load static %}
-                        <a href="#"><img src="{% static "/img/Empty2.jpg" %}" width="90" height="90"></a>
-                        <select name="likes" class="likes">
-                                            <option selected="">5</option>
-                                            <option>4</option>
-                                            <option>3</option>
-                                            <option>2</option>
-                                            <option>1</option>
-                        </select>
-                      </div>
-                      <div class="Context_Post col-md-9">
-                        <h2 class="blog-post-title">{{q.title}}</h2>
-                        <p>{{q.text}}Some Text here...</p>
-                        {% block BottomOnePost %}
-                          <div class="blog-post-meta row Post_title_bottom">
-                            <form>
-                              <input type="checkbox" name="corect"> <span class="Post_title_bottom">Correct!</span>
-                            </form>
-                          </div>
-                        {% endblock %}
-                      </div>
-                    </div>
-
-              {% block PostEnd %}
+  {% for answer in answers %}
+    <div class="blog-post row Post">
+        <div class="avatarka_in_post col-md-2 ">
+          {% load static %}
+          <a href="{% url 'user' id=answer.author.id %}">
+            {% if answer.author.upload %}
+                <img src="{{MEDIA_URL}}{{answer.author.upload.url}}" width="90" height="90">   <!--/static/media/-->
+              {% else %}
+                  <img src="{% static "/img/Empty2.jpg" %}" width="90" height="90">
+              {% endif %}
+          </a>
+          <select name="likes" class="likes">
+                              <option selected="">5</option>
+                              <option>4</option>
+                              <option>3</option>
+                              <option>2</option>
+                              <option>1</option>
+          </select>
+        </div>
+        <div class="Context_Post col-md-9">
+          <h2 class="blog-post-title">{{answer.title}}</h2>
+          <p>{{answer.text}}Some Text here...</p>
+          {% block BottomOnePost %}
+            <div class="blog-post-meta row Post_title_bottom">
+              <form>
+                <input type="checkbox" name="corect"> <span class="Post_title_bottom">Correct!</span>
+              </form>
+            </div>
+          {% endblock %}
+        </div>
+      </div>  
+  {% endfor %}
+{% block PostEnd %}
   <form >
     <textarea class="form-control" name="text" rows="3" value="text" placeholder="Enter your answer hear.."></textarea><br>
     <button class="btn btn-primary btn-lg" type="submit">Ask!</button>
