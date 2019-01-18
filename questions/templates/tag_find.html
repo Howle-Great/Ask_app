@@ -7,11 +7,11 @@
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-      {% endblock %}
+      {% endblock links %}
       {% block OwnLinks %}
         {% load static %}
         <link rel="stylesheet" type="text/css" href="{% static "/css/bender.css" %}">
-      {% endblock %}
+      {% endblock OwnLinks %}
   </head>
   <body>
     {% block title %}
@@ -51,8 +51,8 @@
     {% endblock title %}
     {% block contant %}
       <div class="container">
-       <div class="row">
-         <div class="col-md-9 blog-main my_blog">
+        <div class="row">
+          <div class="col-md-9 blog-main my_blog">
             {% block NamePage %}
               <div class="pb-3 mb-4 font-italic border-bottom row">
                 <h3 class="col-4">
@@ -62,67 +62,100 @@
                 </h3>
               </div>
             {% endblock NamePage %}
-
-
             {% block userPost %}
-              <!-- {% for q in questions %} -->
-                <div class="blog-post row Post">
-                  <div class="avatarka_in_post col-md-2 ">
-                    {% load static %}
-                    <a href="{% url 'tag' %}"><img src="{% static "/img/Empty2.jpg" %}" width="90" height="90"></a>
-                    <select name="likes" class="likes">
-                                        <option selected="">5</option>
-                                        <option>4</option>
-                                        <option>3</option>
-                                        <option>2</option>
-                                        <option>1</option>
-                    </select>
+              <link rel="stylesheet" href="{% static "/css/Like.css" %}">
+              {% for obj in questions %}
+                  <div class="blog-post row Post box-shadow">
+                    <div class="avatarka_in_post col-md-2 ">
+                      {% load static %}
+                      <a href="{% url 'user' id=obj.author.id %}">
+                        {% if obj.author.upload %}
+                          <img src="{{MEDIA_URL}}{{obj.author.upload.url}}" width="90" height="90">   <!--/static/media/-->
+                        {% else %}
+                            <img src="{% static "/img/Empty2.jpg" %}" width="90" height="90">
+                        {% endif %}
+                        {# {{obj.autor}} #}
+                      </a>
+                <div class="container Like_rating_move">
+                  <div class="row">
+                    <div class="card-text align-middle col-md h6 Like_rating_mv">
+                      {{obj.rating}}
+                    </div>
                   </div>
-                <div class="Context_Post col-md-9">
-                  <h2 class="blog-post-title"></h2>
-                  <p><!-- {{q.text}} --></p>
-                  {% block BottomOnePost %}
-                    <div class="blog-post-meta row Post_title_bottom">
-                      <a href="{% url 'questions' %}" class="">answer (3)</a>
-                      <div class="col-9">
-                        <p>Tags: <a href="{% url 'tag' %}">black-jack</a> <a href="{% url 'tag' %}">bender</a></p>
+                  <div class="row">
+                    <div class="col-md-2">
+                      <a href="like">
+                        <img src="{% static "/img/Like.jpg" %}" alt="" width="20" height="20">
+                      </a>
+                    </div>
+                    <div class="col-md-2">
+                      <a href="dislike">
+                        <img src="{% static "/img/Dislike.jpg" %}" alt="" width="20" height="20">
+                      </a>
+                    </div>
+                  </div>
+                </div>
+                    </div>
+                  <div class="Context_Post col-md-9">
+                    <a href="{% url 'question_page' id=obj.author.id %}">
+                      <h2 class="blog-post-title">{{obj.title}}</h2>
+                    </a>
+                    <p>{{obj.text | truncatechars:200}}</p>
+                    {% block BottomOnePost %}
+                      <div class="blog-post-meta row Post_title_bottom">
+                        <a href="{% url 'user' id=obj.author.id %}" class="">{{obj.autor}}</a>
+                        <div class="col-9">
+                        {% if obj.tags %}
+                          <p>Теги:
+                              {% for t in obj.tags.all %}
+                                <a href="">
+                          {{t}}
+                                </a>
+                              {% endfor %}
+                            </p>
+                        {% else %}
+                          {# Тегов нет #}
+                        {% endif %}
+                        </div>
+                      </div>
+                    {% endblock BottomOnePost %}
+                  </div>
+                </div>
+              {% endfor %}
+              
+              {# </div> #}
+
+              {% block PostEnd %}
+              {% endblock PostEnd %}
+
+
+            {% endblock userPost %}
+          </div>
+          <div class="col-md-3">
+            {% block Asidemenu %}
+                <aside class="blog-sidebar my_blog">
+                  <div class="p-3 mb-3">
+                    <div class="p-3">
+                      <h4>Популярные теги</h4>
+                      <div class="row">
+                        {% for t in tags %}
+                          <a href="{% url 'tag' id=t.id %}" class="Pop_tags">{{ t.title }}</a>
+                        {% endfor %}
                       </div>
                     </div>
-                  {% endblock BottomOnePost %}
-                </div>
-              </div>
-
-        {% block PostEnd %}
-        {% endblock PostEnd %}
-
-
-        <!-- {% endfor %} -->
-      {% endblock userPost %}
-              
-        </div>
-        {% block Asidemenu %}
-          <aside class="col-md-3 blog-sidebar my_blog">
-            <div class="p-3 mb-3">
-              <div class="p-3">
-                <h4>Популярные теги</h4>
-                <div class="row">
-                  {% for t in tags %}
-                    <a href="{% url 'tag' id=t.id %}" class="Pop_tags">{{ t.title }}</a>
-                  {% endfor %}}
-                </div>
-              </div>
-              <div class="p-3">
-                <h4 class="font-italic">Топ польщователей</h4>
-                <ol class="list-unstyled">
-                  {% for user in users %}
-                    <li><a href="{% url 'user' id=user.id %}">{{ user }}</a></li>
-                  {% endfor %}
-                </ol>
-              </div>
+                    <div class="p-3">
+                      <h4 class="font-italic">Топ пользователей</h4>
+                      <ol class="list-unstyled">
+                        {% for user in users %}
+                          <li><a href="{% url 'user' id=user.id %}">{{ user }}</a></li>
+                        {% endfor %}
+                      </ol>
+                    </div>
+                  </div>
+                </aside>
+              {% endblock Asidemenu %}
             </div>
-          </aside>
-        {% endblock Asidemenu %}
-      </div>
+        </div>
       </div>
     {% endblock contant%}
     {% block paginate %}

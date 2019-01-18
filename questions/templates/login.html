@@ -14,20 +14,45 @@
 {% endblock %}
 
 {% block userPost %}
-  <form class="needs-validation" novalidate="">
+  <form class="needs-validation" novalidate="" action="/log_in/?next={{ request.GET.next }}" method="post">
+    {% csrf_token %}
+    
+    <fieldset>
+    <div class="col-md-6">
+        <fieldset>
+            <h4>Введите логин и пароль</h4>
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field }}
+                </div>
+            {% endfor %}
+
+            <div class="form-group">
+                <input type="submit" value="Войти" class="btn btn-success"/>
+                <a href="{% url 'registration' %}" class="btn btn-primary">Регистрация</a>
+            </div>
+        </fieldset>
+    </div>
+    <!--
+    <fieldset>
     <p class="Error">
       Sorry, wrong password!!!
     </p>
     <div class="mb-3">
       <label for="login">Login</label>
-      <input type="title" class="form-control" id="login" placeholder="Enter your login here">
+      <input type="text" name="username" class="form-control" maxlength="30" placeholder="Логин" required="" id="username">
     </div>
     <div class="mb-3">
       <label for="password">Password</label>
-      <input type="password" class="form-control" id="password" required="" placeholder="*********">
+      <input type="password" name="password" class="form-control" placeholder="*********" required="" id="password">
     </div>
     <hr class="mb-4">
-    <button class="btn btn-primary btn-lg btn-block" type="submit">Log in</button>
+    <button class="btn btn-primary btn-lg btn-block" type="submit">Log in</button>-->
+  </fieldset>
   </form><br>
-  <a href="{% url 'registr' %}">Create a new account</a>
+  <a href="{% url 'registration' %}">Create a new account</a>
 {% endblock %}
+
+{% block paginate %}
+    
+{% endblock paginate %}
