@@ -1,13 +1,8 @@
 {% extends "tag_find.html" %}
 
-{% block OwnLinks %}
-  {% load static %}
-  <link rel="stylesheet" type="text/css" href="{% static "/css/base.css" %}">
-{% endblock %}
-
 {% block NamePage %}
   <div class="pb-3 mb-4 font-italic border-bottom row">
         <h3 class="col-4">New Questions</h3>
-        <a href="{% url 'hot' %}" class="Hot_qeue">Hot Questions</a>
+        <a href="{% url 'hot' id=1 %}" class="Hot_qeue">Hot Questions</a>
   </div>
 {% endblock %}

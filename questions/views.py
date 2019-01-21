@@ -24,11 +24,15 @@ class NewQuestions(TemplateView):
 	"""docstring for Questions"""
 	template_name = "new_questions.html"
 		
-# class Hot(TemplateView):
-# 	"""docstring for Hot"""
-# 	template_name = "hot.html"
+def index(request):
+    return render(request, 'new_questions.html', {
+            'questions': paginate(request, models.Question.objects.all()),
+            'tags' : paginate(request, models.Tag.objects.hottest()),
+            'users' : paginate(request, models.CustomUser.objects.by_rating()),
+            'page_objects' : paginate(request, models.Question.objects.all()),
+        })
 
-def hot(request, id):
+def hot(request, id=1):
 	"""docstring for Main_menu"""
 	return render(request, "hot.html", {
 		'users' : paginate(request, models.CustomUser.objects.by_rating()),
@@ -102,7 +106,7 @@ def new_answer(request, id):
                 answer = models.Answer.objects.create(author=request.user,
                                 create_date=timezone.now(),
                                 text=form.cleaned_data['text'],
-                                id=answeredQuestion.id)
+                                question_id=answeredQuestion.id)
                 answer.save()
                 return redirect('/question/{}/add_answer/'.format(id))
         else:

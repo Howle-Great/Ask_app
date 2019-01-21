@@ -5,7 +5,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-	path('', views.TagPage.as_view(), name="tag"),
+	# path('', views.TagPage.as_view(), name="tag"),
 	path('new_questions', views.NewQuestions.as_view(), name="question"),
 	path('questions', views.Questions.as_view(), name="questions"),
 	path('sign_up', views.Registration.as_view(), name="registr"),
@@ -13,6 +13,7 @@ urlpatterns = [
 	path('new_ask', views.NewAsk.as_view(), name="ask"),
 
 	# In working
+	path('', views.index, name="tag"),
 	path('user/<int:id>/', views.profile, name="user"),
 	path('user/questions/<int:id>/', views.user_questions, name='user_questions'),
 	path('user/edit/', views.edit, name='edit'),

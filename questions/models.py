@@ -11,9 +11,9 @@ from questions.manager import UserManager, TagManager, QuestionManager, AnswerMa
 # Create your models here.
 
 class CustomUser(AbstractUser):
-    upload = models.ImageField(upload_to='uploads/%Y/%m/%d/')    
-    registration_date = models.DateTimeField(default=timezone.now, verbose_name="Дата решистрации")
-    rating = models.IntegerField(default=0, verbose_name="Рейтинг пользователя")
+    upload = models.ImageField(upload_to='uploads/%Y/%m/%d/', blank=False)    
+    registration_date = models.DateTimeField(default=timezone.now, verbose_name="Дата решистрации", null=True)
+    rating = models.IntegerField(default=0, verbose_name="Рейтинг пользователя", null=True)
 
     objects = UserManager()
 
@@ -21,7 +21,7 @@ class CustomUser(AbstractUser):
         return self.username
 
 class Tag(models.Model):
-    title = models.CharField(max_length=120, verbose_name=u"Заголовок ярлыка")
+    title = models.CharField(max_length=120, verbose_name=u"Заголовок ярлыка", null=True)
 
     objects = TagManager()
 
@@ -30,10 +30,10 @@ class Tag(models.Model):
 
 class Question(models.Model):
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    title = models.CharField(max_length=120, default='', verbose_name=u"Заголовок вопроса")
-    text = models.TextField(verbose_name=u"Полное описание вопроса")
-    create_date = models.DateTimeField(default=datetime.now, verbose_name=u"Время создания вопроса")
-    is_active = models.BooleanField(default=True, verbose_name=u"Доступность вопроса")
+    title = models.CharField(max_length=120, default='', verbose_name=u"Заголовок вопроса", null=True)
+    text = models.TextField(verbose_name=u"Полное описание вопроса", null=True)
+    create_date = models.DateTimeField(default=datetime.now, verbose_name=u"Время создания вопроса", null=True)
+    is_active = models.BooleanField(default=True, verbose_name=u"Доступность вопроса", null=True)
     tags = models.ManyToManyField(Tag, blank=True)
     rating = models.IntegerField(default=0, null=False, verbose_name="Рейтинг вопроса")
     #votes = GenericRelation(Like, related_query_name='questions')
@@ -48,9 +48,9 @@ class Question(models.Model):
 
 class Answer(models.Model):
     author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)   
-    text = models.TextField(verbose_name=u"Полное описание вопроса")
+    text = models.TextField(verbose_name=u"Полное описание вопроса", null=False, default='')
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    create_date = models.DateTimeField(default=datetime.now, verbose_name=u"Время ответа")
+    create_date = models.DateTimeField(default=datetime.now, verbose_name=u"Время ответа", null=False)
     rating = models.IntegerField(default=0, null=False, verbose_name="Рейтинг ответа")
     approved = models.BooleanField(default=False, verbose_name=u"Одобрен автором вопроса")
     #votes = GenericRelation(Like, related_query_name='answers')

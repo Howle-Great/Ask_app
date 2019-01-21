@@ -1,6 +1,6 @@
 {% block title %}
 <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-    <a class="navbar-brand col-md-2" href="{% url 'questions' %}">AskMe</a>
+    <a class="navbar-brand col-md-2" href="{% url 'hot' id=1 %}">AskMe</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
     </button>
@@ -24,7 +24,7 @@
 
     <div class="btn-group show" role="group">
         <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" style="background-color: #28a645; border-color: #28a660; margin-left:50px" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            {{ user }}
+          {{ user }}
         </button>
         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
           <a class="dropdown-item" href="{% url 'user' id=user.id  %}">Профиль</a>
@@ -33,14 +33,15 @@
         </div>
     </div>
     {% else %}
-    <div class="btn-group" role="group">
-        <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" style="background-color: #28a645; border-color: #28a660; margin-left:50px" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+    <div class="btn-group show" role="group">
+        <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" style="background-color: #28a645; border-color: #28a660; margin-left:50px" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Профиль
         </button>
         <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
           <a class="dropdown-item" href="{% url 'login' %}">Войти</a>
         </div>
-    </div>       
+    </div>
+        
     {% endif %}
 
 
