@@ -1,9 +1,16 @@
 .Like_rating_move {
 	/*border: 1px solid black;*/
 	margin-left: 10px;
-	margin-top: 15px;
 }
 .Like_rating_mv {
 	margin-left: 15px;
 	color: ##A6A786	;
+}
+
+.Like_button {
+	margin-top: 15px;
+}
+
+.Like_button_up_menu {
+
 }

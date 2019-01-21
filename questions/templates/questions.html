@@ -5,22 +5,11 @@
   <link href="{% static "/css/questions.css" %}" rel="stylesheet">
 {% endblock %}
 
-{% block Userfoto %}
-  <div class="row col-md-3" style="color: white;">
-    <div class="col-sm-9">
-      <div class="row">
-        <div class="col-8 col-sm-6">
-          <a href="{% url 'login' %}">log in</a>
-        </div>
-        <div class="col-4 col-sm-6">
-          <a href="{% url 'registr' %}">register</a>
-        </div>
-      </div>
-    </div>
-  </div>
-{% endblock %}
+
 
 {% block NamePage %}
+{% load static %}
+<link rel="stylesheet" href="{% static "/css/Like.css" %}">
   <div class="Top_Post">
     <div class="pb-3 mb-4 font-italic border-bottom row">
         <div class="blog-post row ">
@@ -32,81 +21,176 @@
               {% else %}
                   <img src="{% static "/img/Empty2.jpg" %}" width="140" height="140">
               {% endif %}
-            </a><br>
-            <select name="likes" class="likes">
-                                <option selected="">5</option>
-                                <option>4</option>
-                                <option>3</option>
-                                <option>2</option>
-                                <option>1</option>
-            </select>
+              <br>
+              <div class="h6 Author_label">
+                {{question.author}}
+              </div>
+            </a>
+            <div class="container Like_rating_move">
+              <div class="row">
+                <div class="card-text h5 Like_rating_mv" style="margin-left: 40px;">
+                  {{question.rating}}
+                </div>
+              </div>
+              <div class="row Like_button_up_menu">
+                <div class="col-md-3">
+                  <button class="my_btn1 js-like-question Like_button" data-question_id="{{ question.id }}" data-like_type="like" style="padding: 0px 0px 0px 0px; margin-top: 5px; ">
+                    <img src="{% static "/img/Like_heart.jpg" %}" alt="" width="24" height="24">
+                  </button>                        
+                  {% csrf_token %}
+                </div>
+              </div>
+            </div>
           </div>
           <div class="Context_Post col-md-8">
-            <h2 class="blog-post-title">{{question.title}}</h2>
+            <a href="{% url 'question_page' id=question.author.id %}">
+              <h2 class="blog-post-title">{{question.title}}</h2>
+            </a>
             <p>{{question.text}}</p>
-            <div class="blog-post-meta row Post_title_bottom_up">
+
+            <div class="blog-post-meta row Post_title_bottom">
+              <div class="col-md-5">
+                  {{question.create_date}}
+              </div>
+              <div class="col-7">
               {% if question.tags %}
                 <p>Теги:
-                  {% for t in question.tags.all %}
-                    <a href="">
-                      {{t}}
-                    </a>
-                  {% endfor %}
-                </p>
+                    {% for t in question.tags.all %}
+                      <a href="{% url 'tag' id=t.id">
+                        {{t}}
+                      </a>
+                    {% endfor %}
+                  </p>
               {% else %}
                 {# Тегов нет #}
               {% endif %}
+              </div>
             </div>
           </div>
         </div>
     </div>
   </div>
-{% endblock %}
+{% endblock NamePage %}
+
+
+
 {% block userPost %}
-  {% for answer in answers %}
-    <div class="blog-post row Post">
+  {% for obj in answers %}
+      <div class="blog-post row Post box-shadow">
         <div class="avatarka_in_post col-md-2 ">
           {% load static %}
-          <a href="{% url 'user' id=answer.author.id %}">
-            {% if answer.author.upload %}
-                <img src="{{MEDIA_URL}}{{answer.author.upload.url}}" width="90" height="90">   <!--/static/media/-->
-              {% else %}
-                  <img src="{% static "/img/Empty2.jpg" %}" width="90" height="90">
-              {% endif %}
-          </a>
-          <select name="likes" class="likes">
-                              <option selected="">5</option>
-                              <option>4</option>
-                              <option>3</option>
-                              <option>2</option>
-                              <option>1</option>
-          </select>
-        </div>
-        <div class="Context_Post col-md-9">
-          <h2 class="blog-post-title">{{answer.title}}</h2>
-          <p>{{answer.text}}Some Text here...</p>
-          {% block BottomOnePost %}
-            <div class="blog-post-meta row Post_title_bottom">
-              <form>
-                <input type="checkbox" name="corect"> <span class="Post_title_bottom">Correct!</span>
-              </form>
+          <a href="{% url 'user' id=obj.author.id %}">
+            {% if obj.author.upload %}
+              <img src="{{MEDIA_URL}}{{obj.author.upload.url}}" width="90" height="90">   <!--/static/media/-->
+            {% else %}
+                <img src="{% static "/img/Empty2.jpg" %}" width="90" height="90">
+            {% endif %}
+            <br>
+            <div class="h6 Author_label">
+              {{obj.author}}
             </div>
-          {% endblock %}
+          </a>
+          <div class="container Like_rating_move">
+            <div class="row">
+              <div class="card-text h5 Like_rating_mv">
+                {{obj.rating}}
+              </div>
+            </div>
+            <div class="row Like_button_up_menu">
+              <div class="col-md-3">
+                <button class="my_btn1 js-like-question Like_button" data-question_id="{{ obj.id }}" data-like_type="like" style="padding: 0px 0px 0px 0px;margin-top: 5px;">
+                  <img src="{% static "/img/Like_heart.jpg" %}" alt="" width="24" height="24">
+                </button>                        
+                {% csrf_token %}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>  
+      <div class="Context_Post col-md-10">
+        <a href="{% url 'question_page' id=obj.author.id %}">
+          <h2 class="blog-post-title">{{obj.title}}</h2>
+        </a>
+        <p>{{obj.text}}</p>
+        {% block BottomOnePost %}
+          <div class="blog-post-meta row Post_title_bottom">
+            {% if answer.approved %}
+              <div style="background-color: #28a645; border-color: #28a660;border-radius:7px; color: white;">
+                Одобрен
+              </div>                        
+              {% csrf_token %}
+            {% else %}
+                  
+              {% if user.id == question.author.id %}
+                <button class="my_btn1 js-approve-answer" data-answer_id="{{ answer.id }}" style="background-color: #28a645; border-color: #28a660;border-radius:7px; color: white;">Одобрен?</button>                        
+                {% csrf_token %}  
+              {% endif %}
+            {% endif %}
+            <!-- <form>
+              <input type="checkbox" name="corect"> <span class="Post_title_bottom">Correct!</span>
+            </form> -->
+          </div>
+        {% endblock %}
+      </div>
+    </div>
   {% endfor %}
+   <a href="{% url 'new_answer' id=question.id %}">wefwef</a>
+   <form class="form-horizontal media answer_item" action="{{ request.path }}" method="post">
+    {% csrf_token %}
+
+    <div class="col-md-12">
+        <!--<div class="form-group">
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
+        </div>-->
+        {% for field in form %}
+                <div class="form-group">
+                    {{ field }}
+                </div>
+            {% endfor %}
+        <div class="form-group">
+            <input type="submit" value="Ответить" class="btn btn-success"/>
+        </div>
+    </div>
+
+</form>
+{% endblock userPost %}
+
+
+
+
+
 {% block PostEnd %}
-  <form >
+  <form class="form-horizontal media answer_item" action="{{ request.path }}" method="post">
+    {% csrf_token %}
+
+    <div class="col-md-12">
+        <div class="form-group">
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Ответить" class="btn btn-success"/>
+        </div>
+    </div>
+
+</form>
+  <!--<form class="form-horizontal media answer_item" action="{{ request.path }}" method="post">
+    {% csrf_token %}
+
+    <div class="col-md-12">
+        <div class="form-group">
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Ответить" class="btn btn-success"/>
+        </div>
+    </div>
+
+</form>-->
+  <!--<form >
     <textarea class="form-control" name="text" rows="3" value="text" placeholder="Enter your answer hear.."></textarea><br>
     <button class="btn btn-primary btn-lg" type="submit">Ask!</button>
-  </form>
-{% endblock %}
+  </form>-->
+{% endblock PostEnd %}
 
 
                     {#% endfor %#}
-              {% endblock userPost %}
 
-
-
-
-{% block listing %} {% endblock %}

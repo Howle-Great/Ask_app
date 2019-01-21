@@ -1,0 +1,22 @@
+{% block Asidemenu %}
+  <aside class="blog-sidebar my_blog">
+    <div class="p-3 mb-3">
+      <div class="p-3">
+        <h4>Популярные теги</h4>
+        <div class="row">
+          {% for t in tags %}
+            <a href="{% url 'tag' id=t.id %}" class="Pop_tags">{{ t.title }}</a>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="p-3">
+        <h4 class="font-italic">Топ пользователей</h4>
+        <ol class="list-unstyled">
+          {% for user in users %}
+            <li><a href="{% url 'user' id=user.id %}">{{ user }}</a></li>
+          {% endfor %}
+        </ol>
+      </div>
+    </div>
+  </aside>
+{% endblock Asidemenu %}

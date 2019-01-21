@@ -8,49 +8,87 @@
 {% block NamePage %}
   <div class="row font-italic border-bottom pb-2 mb-3  ">
     <div class="col-9 ">
-      <h3>Settings: {{profile}}</h3>
+      <h3>Настройки: {{profile}}</h3>
     </div>
     <div class="col-3">
       <a href="{% url 'user_questions' id=profile.id %}">
-        User Questions
+        Вопросы пользователя
       </a>
     </div>
   </div>
 {% endblock %}
 
 {% block userPost %}
+
   <form class="needs-validation" novalidate="">
-    <div class="mb-3">
-      <label for="login">Login</label>
-      <input type="text" class="form-control" id="login" value="{{profile}}">
-    </div>
-    <div class="form-group">
-     <label for="email">Email</label>
-     <input type="email" class="form-control" name="email" rows="3" value="{{ profile.email }}"></input>
-    </div>
-    <div class="mb-3 group">
-      <label for="nick">First Name</label>
-      <input type="text" class="form-control" id="nick" required="" value="{{profile.first_name}}">
-    </div>
-    <div class="mb-3 group">
-      <label for="nick">Last Name</label>
-      <input type="text" class="form-control" id="nick" required="" value="{{profile.last_name}}">
+    <div class="FileDiv">
+      <div style="margin-left:20px;margin-top:10px;">
+    <div class="form-group row ">
+            <div class="col-2">
+                Логин
+            </div>
+            <div class="col-10">
+                {{profile}}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-2">
+                Имя
+            </div>
+            <div class="col-10">
+                {{profile.first_name}}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-2">
+                Фамилия
+            </div>
+            <div class="col-10">
+                {{profile.last_name}}
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-2">
+                Почта
+            </div>
+            <div class="col-10">
+                {{ profile.email }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-2">
+                Рейтинг
+            </div>
+            <div class="col-10">
+                {{ profile.rating }}
+            </div>
+        </div>
+      </div>
     </div>
     <div class="md-3 container FileDiv group">
       <div class="row">
         <div class="col-md-5">
           {% load static %}
-          <img src="{{profile.upload}}" width="150" height="150">
-          
-        </div>
-        <div class="col-md-7 FileInputTeg">
-          <input type="file" name="file" value="img">
+          {% if profile.upload %}
+                <img src="{{MEDIA_URL}}{{profile.upload.url}}" width="150" height="150">   <!--/static/media/-->
+              {% else %}
+                  <img src="{% static "/img/Empty2.jpg" %}" width="150" height="150">
+              {% endif %}
         </div>
       </div>
     </div>
-    <hr class="mb-4">
-    <button class="btn btn-primary btn-lg btn-block" type="submit">Save</button>
+    {% if user.is_authenticated and user.id == profile.id%}
+      <hr class="mb-4">
+      <div class="form-group row ">
+          <div class="col-md-12">
+              <a href="{% url 'edit' %}" class="btn btn-primary">Редактировать</a>
+          </div>
+      </div>
+    {% endif %}
   </form>
 {% endblock %}
-
-{% block listing %}{% endblock %}
+{% block paginate %}
+{% endblock paginate%}

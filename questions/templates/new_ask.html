@@ -10,6 +10,27 @@
 {% block NamePage %}{% endblock %}
 
 {% block userPost %}
+<form class="form-horizontal" action="{% url 'ask' %}" method="post">
+    {% csrf_token %}
+
+    <div class="col-md-12">
+        <fieldset>
+            <h4>Задайте новый вопрос</h4> 
+
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field }}
+                </div>
+            {% endfor %}
+
+            <div class="form-group">
+                <input type="submit" value="Отправить" class="btn btn-success"/>
+            </div>
+        </fieldset>
+    </div>
+
+</form>
+<!--
   <h3 class="mb-3">New Questions</h3>
   <form class="needs-validation" novalidate="">
     <div class="mb-3">
@@ -29,5 +50,5 @@
     </div>
     <hr class="mb-4">
     <button class="btn btn-primary btn-lg btn-block" type="submit">Ask!</button>
-  </form>
+  </form>-->
 {% endblock %}

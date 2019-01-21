@@ -10,6 +10,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from . import models
+from django.utils import timezone
 from questions.forms import UserRegistrationForm, UserLoginForm, UserSettingsForm, AskForm, AnswerForm, UserForm
 
 # from .models import Post 
@@ -45,10 +46,10 @@ def profile(request, id):
 def user_questions(request, id):	#Переделай вид страницы! не красиво!
 	"""docstring for Main_menu"""
 	return render(request, "user_question.html", {
-		'users' : paginate(request, models.CustomUser.objects.by_rating()),
-		'tags' : paginate(request, models.Tag.objects.hottest()),
-		"questions": paginate(request, objects_list = models.Question.objects.get_by_user(id)),
-		"page_objects": paginate(request, objects_list = models.Question.objects.get_hot()),
+		'questions': paginate(request, models.Question.objects.get_by_user(user_id=id)),
+        'tags' : paginate(request, models.Tag.objects.hottest()),
+        'users' : paginate(request, models.CustomUser.objects.by_rating()),
+        'page_objects' : paginate(request, models.Question.objects.get_by_user(user_id=id)),
 		})
 
 def question_page(request, id):
@@ -69,30 +70,51 @@ def tag(request, id):
         "page_objects": paginate(request, objects_list = models.Question.objects.get_by_tag(tag_id=id)),
     })
 
+
+def edit(request):
+    user = get_object_or_404(models.CustomUser, username=request.user)
+
+    if request.method == 'POST':
+        form = UserSettingsForm(instance=user,
+                               data=request.POST,
+                               files=request.FILES
+                              )
+        if form.is_valid():
+            form.save()
+            return profile(request, user.id)
+    else:
+        form = UserSettingsForm(instance=user)
+
+    return render(request, 'edit.html', {
+            'form': form,
+            'tags' : paginate(request, models.Tag.objects.hottest()),
+            'users' : paginate(request, models.CustomUser.objects.by_rating()),
+        })
+
 @login_required(login_url='/log_in/')
-def new_answer(request, question_id):
-    if Question.objects.filter(id=question_id).exists():
+def new_answer(request, id):
+    if models.Question.objects.filter(id=id).exists():
         if request.method == 'POST':
             form = AnswerForm(request.POST)
             if form.is_valid():
-                #answeredQuestion = Question.objects.get_by_id(question_id)[0]
-                answeredQuestion = get_object_or_404(Question, pk=question_id)
-                answer = Answer.objects.create(author=request.user,
+                #answeredQuestion = Question.objects.get_by_id(id)[0]
+                answeredQuestion = get_object_or_404(models.Question, pk=id)
+                answer = models.Answer.objects.create(author=request.user,
                                 create_date=timezone.now(),
                                 text=form.cleaned_data['text'],
-                                question_id=answeredQuestion.id)
+                                id=answeredQuestion.id)
                 answer.save()
-                return redirect('/question/{}/add_answer/'.format(question_id))
+                return redirect('/question/{}/add_answer/'.format(id))
         else:
             form = AnswerForm()
         #return render(request, 'question/new_answer.html', {'form': form})
-        return render(request, 'question.html', {
+        return render(request, 'questions.html', {
             'form': form,
-            'question': get_object_or_404(Question, pk=question_id),
-            'answers' : paginate(request, Answer.objects.get_hot_for_answer(question_id)),
-            'tags' : paginate(request, Tag.objects.hottest()),
-            'users' : paginate(request, User.objects.by_rating()),
-            'page_objects' : paginate(request, Answer.objects.get_hot_for_answer(question_id)),
+            'question': get_object_or_404(models.Question, pk=id),
+            'answers' : paginate(request, models.Answer.objects.get_hot_for_answer(id)),
+            'tags' : paginate(request, models.Tag.objects.hottest()),
+            'users' : paginate(request, models.CustomUser.objects.by_rating()),
+            'page_objects' : paginate(request, models.Answer.objects.get_hot_for_answer(id)),
         })
     else:
         raise Http404
@@ -102,7 +124,7 @@ def ask(request):
     if request.method == 'POST':
         form = AskForm(request.POST)
         if form.is_valid():
-            ques = Question.objects.create(author=request.user,
+            ques = models.Question.objects.create(author=request.user,
                             create_date=timezone.now(),
                             is_active=True,
                             title=form.cleaned_data['title'],
@@ -110,7 +132,7 @@ def ask(request):
             ques.save()
 
             for tagTitle in form.cleaned_data['tags'].split():
-                tag = Tag.objects.get_or_create(title=tagTitle)[0]
+                tag = models.Tag.objects.get_or_create(title=tagTitle)[0]
                 ques.tags.add(tag)
                 ques.save()
             #return question(request, ques.id)
@@ -119,8 +141,8 @@ def ask(request):
         form = AskForm()
     return render(request, 'new_ask.html', {
             'form': form,
-            'tags' : paginate(request, Tag.objects.hottest()),
-            'users' : paginate(request, User.objects.by_rating()),
+            'tags' : paginate(request, models.Tag.objects.hottest()),
+            'users' : paginate(request, models.CustomUser.objects.by_rating()),
         })
 
 def signin(request):

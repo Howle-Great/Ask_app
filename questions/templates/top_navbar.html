@@ -1,0 +1,73 @@
+{% block title %}
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand col-md-2" href="{% url 'questions' %}">AskMe</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse col-md-1">
+      <form class="form-inline mt-2 mt-md-0">
+        <input class="form-control mr-sm-2 col-md-8" type="text" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0"  type="submit">ASK!</button>
+      </form>
+    </div>
+
+
+    {% if user.is_authenticated %}
+    {% load static %}
+    <a href="{% url 'user' id=user.id %}">
+      {% if user.upload %}
+        <img src="{{MEDIA_URL}}{{user.upload.url}}" width="40" height="40"> 
+      {% else %}
+          <img src="{% static "/img/Empty2.jpg" %}" width="40" height="40">
+      {% endif %}
+    </a>
+
+    <div class="btn-group show" role="group">
+        <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" style="background-color: #28a645; border-color: #28a660; margin-left:50px" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{ user }}
+        </button>
+        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+          <a class="dropdown-item" href="{% url 'user' id=user.id  %}">Профиль</a>
+          <a class="dropdown-item" href="{% url 'edit' %}">Настройки</a>
+          <a class="dropdown-item" href="{% url 'signout' %}">Выйти</a>
+        </div>
+    </div>
+    {% else %}
+    <div class="btn-group" role="group">
+        <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" style="background-color: #28a645; border-color: #28a660; margin-left:50px" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+          Профиль
+        </button>
+        <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+          <a class="dropdown-item" href="{% url 'login' %}">Войти</a>
+        </div>
+    </div>       
+    {% endif %}
+
+
+
+
+
+<!--
+    {# {% block Userfoto %} #}
+      <div class="col-md-1">
+        <a class="navbar" href="{% url 'setting' %}">
+          {% load static %}
+          <img src="{% static "/img/img_empty.png" %} " widght="50" height="40">
+        </a>
+      </div>
+      <div class="row col-md-3" style="color: white;">
+        <div class="col-sm-9">
+          Name
+          <div class="row">
+            <div class="col-8 col-sm-6">
+              <a href="{% url 'setting' %}">settings</a>
+            </div>
+            <div class="col-4 col-sm-6">
+              <a href="{% url 'question' %}">log out</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    {# {% endblock Userfoto %} #}-->
+  </nav>
+{% endblock title %}

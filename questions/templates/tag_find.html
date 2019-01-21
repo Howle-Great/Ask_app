@@ -7,6 +7,7 @@
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <link rel="stylesheet" type="text/css" href="{% static "/css/base.css" %}">
       {% endblock links %}
       {% block OwnLinks %}
         {% load static %}
@@ -14,41 +15,7 @@
       {% endblock OwnLinks %}
   </head>
   <body>
-    {% block title %}
-      <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-          <a class="navbar-brand col-md-2" href="{% url 'questions' %}">AckMe</a>
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarCollapse col-md-1">
-            <form class="form-inline mt-2 mt-md-0">
-              <input class="form-control mr-sm-2 col-md-8" type="text" placeholder="Search" aria-label="Search">
-              <button class="btn btn-outline-success my-2 my-sm-0"  type="submit">ASK!</button>
-            </form>
-          </div>
-          {% block Userfoto %}
-            <div class="col-md-1">
-              <a class="navbar" href="{% url 'setting' %}">
-                {% load static %}
-                <img src="{% static "/img/img_empty.png" %} " widght="50" height="40">
-              </a>
-            </div>
-            <div class="row col-md-3" style="color: white;">
-              <div class="col-sm-9">
-                Name
-                <div class="row">
-                  <div class="col-8 col-sm-6">
-                    <a href="{% url 'setting' %}">settings</a>
-                  </div>
-                  <div class="col-4 col-sm-6">
-                    <a href="{% url 'question' %}">log out</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-          {% endblock Userfoto %}
-      </nav>
-    {% endblock title %}
+    {% include "top_navbar.html" %}
     {% block contant %}
       <div class="container">
         <div class="row">
@@ -122,39 +89,13 @@
                   </div>
                 </div>
               {% endfor %}
-              
-              {# </div> #}
-
               {% block PostEnd %}
               {% endblock PostEnd %}
-
-
             {% endblock userPost %}
           </div>
           <div class="col-md-3">
-            {% block Asidemenu %}
-                <aside class="blog-sidebar my_blog">
-                  <div class="p-3 mb-3">
-                    <div class="p-3">
-                      <h4>Популярные теги</h4>
-                      <div class="row">
-                        {% for t in tags %}
-                          <a href="{% url 'tag' id=t.id %}" class="Pop_tags">{{ t.title }}</a>
-                        {% endfor %}
-                      </div>
-                    </div>
-                    <div class="p-3">
-                      <h4 class="font-italic">Топ пользователей</h4>
-                      <ol class="list-unstyled">
-                        {% for user in users %}
-                          <li><a href="{% url 'user' id=user.id %}">{{ user }}</a></li>
-                        {% endfor %}
-                      </ol>
-                    </div>
-                  </div>
-                </aside>
-              {% endblock Asidemenu %}
-            </div>
+            {% include "aside_menu.html" %}  
+          </div>
         </div>
       </div>
     {% endblock contant%}
