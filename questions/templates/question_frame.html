@@ -1,0 +1,61 @@
+{% load static %}
+<link rel="stylesheet" href="{% static "/css/Like.css" %}">
+  {% for obj in questions %}
+      <div class="blog-post row Post box-shadow">
+        <div class="avatarka_in_post col-md-2 ">
+          {% load static %}
+          <a href="{% url 'user' id=obj.author.id %}">
+          	{% if obj.author.upload %}
+          		<img src="{{MEDIA_URL}}{{obj.author.upload.url}}" width="90" height="90">   <!--/static/media/-->
+          	{% else %}
+          	    <img src="{% static "/img/Empty2.jpg" %}" width="90" height="90">
+          	{% endif %}
+            <br>
+            <div class="h6 Author_label">
+              {{obj.author}}
+            </div>
+          </a>
+    			<div class="container Like_rating_move">
+    				<div class="row">
+    					<div class="card-text h5 Like_rating_mv">
+    						{{obj.rating}}
+    					</div>
+    				</div>
+    				<div class="row Like_button_up_menu">
+    					<div class="col-md-3">
+                <button class="my_btn1 js-like-question Like_button" data-question_id="{{ obj.id }}" data-like_type="like" style="padding: 0px 0px 0px 0px;margin-top: 5px;">
+                  <img src="{% static "/img/Like_heart.jpg" %}" alt="" width="24" height="24">
+                </button>                        
+                {% csrf_token %}
+    					</div>
+    				</div>
+    			</div>
+        </div>
+      <div class="Context_Post col-md-10">
+        <a href="{% url 'question_page' id=obj.id %}">
+        	<h2 class="blog-post-title">{{obj.title}}</h2>
+        </a>
+        <p>{{obj.text | truncatechars:200}}</p>
+        {% block BottomOnePost %}
+          <div class="blog-post-meta row Post_title_bottom">
+            <div class="col-md-5">
+                {{obj.create_date}}
+            </div>
+            <div class="col-7">
+          	{% if obj.tags %}
+          		<p>Теги:
+              		{% for t in obj.tags.all %}
+              			<a href="{% url 'tag' id=t.id %}">
+							        {{t}}
+              			</a>
+              		{% endfor %}
+              	</p>
+          	{% else %}
+          		{# Тегов нет #}
+          	{% endif %}
+            </div>
+          </div>
+        {% endblock BottomOnePost %}
+      </div>
+    </div>
+  {% endfor %}

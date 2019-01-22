@@ -56,7 +56,7 @@
               {% if question.tags %}
                 <p>Теги:
                     {% for t in question.tags.all %}
-                      <a href="{% url 'tag' id=t.id">
+                      <a href="{% url 'tag' id=t.id %}">
                         {{t}}
                       </a>
                     {% endfor %}
@@ -75,87 +75,7 @@
 
 
 {% block userPost %}
-  {% for obj in answers %}
-      <div class="blog-post row Post box-shadow">
-        <div class="avatarka_in_post col-md-2 ">
-          {% load static %}
-          <a href="{% url 'user' id=obj.author.id %}">
-            {% if obj.author.upload %}
-              <img src="{{MEDIA_URL}}{{obj.author.upload.url}}" width="90" height="90">   <!--/static/media/-->
-            {% else %}
-                <img src="{% static "/img/Empty2.jpg" %}" width="90" height="90">
-            {% endif %}
-            <br>
-            <div class="h6 Author_label">
-              {{obj.author}}
-            </div>
-          </a>
-          <div class="container Like_rating_move">
-            <div class="row">
-              <div class="card-text h5 Like_rating_mv">
-                {{obj.rating}}
-              </div>
-            </div>
-            <div class="row Like_button_up_menu">
-              <div class="col-md-3">
-                <button class="my_btn1 js-like-question Like_button" data-question_id="{{ obj.id }}" data-like_type="like" style="padding: 0px 0px 0px 0px;margin-top: 5px;">
-                  <img src="{% static "/img/Like_heart.jpg" %}" alt="" width="24" height="24">
-                </button>                        
-                {% csrf_token %}
-              </div>
-            </div>
-          </div>
-        </div>
-      <div class="Context_Post col-md-10">
-        <a href="{% url 'question_page' id=obj.author.id %}">
-          <h2 class="blog-post-title">{{obj.title}}</h2>
-        </a>
-        <p>{{obj.text}}</p>
-        {% block BottomOnePost %}
-          <div class="blog-post-meta row Post_title_bottom">
-            {% if answer.approved %}
-              <div style="background-color: #28a645; border-color: #28a660;border-radius:7px; color: white;">
-                Одобрен
-              </div>                        
-              {% csrf_token %}
-            {% else %}
-                  
-              {% if user.id == question.author.id %}
-                <button class="my_btn1 js-approve-answer" data-answer_id="{{ answer.id }}" style="background-color: #28a645; border-color: #28a660;border-radius:7px; color: white;">Одобрен?</button>                        
-                {% csrf_token %}  
-              {% endif %}
-            {% endif %}
-            <!-- <form>
-              <input type="checkbox" name="corect"> <span class="Post_title_bottom">Correct!</span>
-            </form> -->
-          </div>
-        {% endblock %}
-      </div>
-    </div>
-  {% endfor %}
-   <a href="{% url 'new_answer' id=question.id %}">wefwef</a>
-   <form class="form-horizontal media answer_item" action="{{ request.path }}" method="post">
-    {% csrf_token %}
-
-    <div class="col-md-12">
-        <!--<div class="form-group">
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="5"></textarea>
-        </div>-->
-        {% for field in form %}
-                <div class="form-group">
-                    {{ field }}
-                </div>
-            {% endfor %}
-        {% if form %}
-            <div class="form-group">
-            <input type="submit" value="Ответить" class="btn btn-success"/>
-        </div>
-        
-        {% endif %}
-        
-    </div>
-
-</form>
+  {% include "answers_frame.html" %}
 {% endblock userPost %}
 
 
@@ -163,7 +83,7 @@
 
 
 {% block PostEnd %}
-  <form class="form-horizontal media answer_item" action="{{ request.path }}" method="post">
+  <form class="form-horizontal media answer_item" id="Aswer" action="{{ request.path }}" method="post">
     {% csrf_token %}
 
     <div class="col-md-12">

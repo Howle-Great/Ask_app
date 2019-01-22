@@ -33,7 +33,7 @@ class Question(models.Model):
     title = models.CharField(max_length=120, default='', verbose_name=u"Заголовок вопроса", null=True)
     text = models.TextField(verbose_name=u"Полное описание вопроса", null=True)
     create_date = models.DateTimeField(default=datetime.now, verbose_name=u"Время создания вопроса", null=True)
-    is_active = models.BooleanField(default=True, verbose_name=u"Доступность вопроса", null=True)
+    is_active = models.BooleanField(default=True, verbose_name=u"Доступность вопроса")
     tags = models.ManyToManyField(Tag, blank=True)
     rating = models.IntegerField(default=0, null=False, verbose_name="Рейтинг вопроса")
     #votes = GenericRelation(Like, related_query_name='questions')

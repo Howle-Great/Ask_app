@@ -16,7 +16,12 @@
     <div class="col-md-12">
         <fieldset>
             <h4>Задайте новый вопрос</h4> 
-
+            {% if error and not firstly %}
+              <div class="alert alert-danger" role="alert">
+                <h4 class="alert-heading">Ошибка формата!</h4>
+                <p>Данные введены в неправильном формате!</p>
+              </div>
+            {% endif %}
             {% for field in form %}
                 <div class="form-group">
                     {{ field }}

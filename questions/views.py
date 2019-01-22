@@ -1,14 +1,14 @@
 # from django.shortcuts import render
 # from django.http import HttpResponse
-from django.views.generic import TemplateView
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.views.generic.edit import CreateView
 from django.views import generic
 from django.urls import reverse_lazy
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
+import json
 from . import models
 from django.utils import timezone
 from questions.forms import UserRegistrationForm, UserLoginForm, UserSettingsForm, AskForm, AnswerForm, UserForm
@@ -16,34 +16,47 @@ from questions.forms import UserRegistrationForm, UserLoginForm, UserSettingsFor
 # from .models import Post 
 
 # Create your views here.
-class TagPage(TemplateView):
-	# model = Post
-	template_name = "tag_find.html"
-
-class NewQuestions(TemplateView):
-	"""docstring for Questions"""
-	template_name = "new_questions.html"
 		
 def index(request):
     return render(request, 'new_questions.html', {
+            'title': 'Вопросы',
             'questions': paginate(request, models.Question.objects.all()),
-            'tags' : paginate(request, models.Tag.objects.hottest()),
-            'users' : paginate(request, models.CustomUser.objects.by_rating()),
+            'tags' : paginate(request, models.Tag.objects.hottest())[:10],
+            'users' : paginate(request, models.CustomUser.objects.by_rating())[:10],
             'page_objects' : paginate(request, models.Question.objects.all()),
         })
+
+def top(request):
+    return render(request, 'new_questions.html', {
+            'title': 'Топ вопросов',
+            'questions': paginate(request, models.Question.objects.get_hot()),
+            'tags' : paginate(request, models.Tag.objects.hottest())[:10],
+            'users' : paginate(request, models.CustomUser.objects.by_rating())[:10],
+            'page_objects' : paginate(request, models.Question.objects.get_hot()),
+        })
+
+def new(request):
+    return render(request, 'new_questions.html', {
+            'title': 'Новые',
+            'questions': paginate(request, models.Question.objects.get_new()),
+            'tags' : paginate(request, models.Tag.objects.hottest())[:10],
+            'users' : paginate(request, models.CustomUser.objects.by_rating())[:10],
+            'page_objects' : paginate(request, models.Question.objects.get_new()),
+        })
+
 
 def hot(request, id=1):
 	"""docstring for Main_menu"""
 	return render(request, "hot.html", {
-		'users' : paginate(request, models.CustomUser.objects.by_rating()),
-		'tags' : paginate(request, models.Tag.objects.hottest()),
+		'users' : paginate(request, models.CustomUser.objects.by_rating())[:10],
+		'tags' : paginate(request, models.Tag.objects.hottest())[:10],
 		"questions" : paginate(request, objects_list = models.Question.objects.get_hot()),
 		"page_objects" : paginate(request, objects_list = models.Question.objects.get_hot()),
 		})
 def profile(request, id):
 	return render(request, "user_settings.html", {
-		'users' : paginate(request, models.CustomUser.objects.by_rating()),
-		'tags' : paginate(request, models.Tag.objects.hottest()),
+		'users' : paginate(request, models.CustomUser.objects.by_rating())[:10],
+		'tags' : paginate(request, models.Tag.objects.hottest())[:10],
 		"profile": get_object_or_404(models.CustomUser, pk=id),
 		})
 
@@ -51,15 +64,15 @@ def user_questions(request, id):	#Переделай вид страницы! н
 	"""docstring for Main_menu"""
 	return render(request, "user_question.html", {
 		'questions': paginate(request, models.Question.objects.get_by_user(user_id=id)),
-        'tags' : paginate(request, models.Tag.objects.hottest()),
-        'users' : paginate(request, models.CustomUser.objects.by_rating()),
+        'tags' : paginate(request, models.Tag.objects.hottest())[:10],
+        'users' : paginate(request, models.CustomUser.objects.by_rating())[:10],
         'page_objects' : paginate(request, models.Question.objects.get_by_user(user_id=id)),
 		})
 
 def question_page(request, id):
 	return render(request, "questions.html", {
-		'users' : paginate(request, models.CustomUser.objects.by_rating()),
-		'tags' : paginate(request, models.Tag.objects.hottest()),
+		'users' : paginate(request, models.CustomUser.objects.by_rating())[:10],
+		'tags' : paginate(request, models.Tag.objects.hottest())[:10],
 		"question": get_object_or_404(models.Question, pk=id) ,
 		"answers": paginate(request, objects_list = models.Answer.objects.get_hot_for_answer(id)),
 		"page_objects": paginate(request, objects_list = models.Answer.objects.get_hot_for_answer(id)),
@@ -91,8 +104,8 @@ def edit(request):
 
     return render(request, 'edit.html', {
             'form': form,
-            'tags' : paginate(request, models.Tag.objects.hottest()),
-            'users' : paginate(request, models.CustomUser.objects.by_rating()),
+            'tags' : paginate(request, models.Tag.objects.hottest())[:10],
+            'users' : paginate(request, models.CustomUser.objects.by_rating())[:10],
         })
 
 @login_required(login_url='/log_in/')
@@ -116,8 +129,8 @@ def new_answer(request, id):
             'form': form,
             'question': get_object_or_404(models.Question, pk=id),
             'answers' : paginate(request, models.Answer.objects.get_hot_for_answer(id)),
-            'tags' : paginate(request, models.Tag.objects.hottest()),
-            'users' : paginate(request, models.CustomUser.objects.by_rating()),
+            'tags' : paginate(request, models.Tag.objects.hottest())[:10],
+            'users' : paginate(request, models.CustomUser.objects.by_rating())[:10],
             'page_objects' : paginate(request, models.Answer.objects.get_hot_for_answer(id)),
         })
     else:
@@ -125,7 +138,9 @@ def new_answer(request, id):
 
 @login_required(login_url='/log_in/')
 def ask(request):
+    error = True
     if request.method == 'POST':
+        firstly = False
         form = AskForm(request.POST)
         if form.is_valid():
             ques = models.Question.objects.create(author=request.user,
@@ -141,60 +156,39 @@ def ask(request):
                 ques.save()
             #return question(request, ques.id)
             return redirect('/question/{}/'.format(ques.id))
+        else:
+            error = False
     else:
         form = AskForm()
+    firstly = True
     return render(request, 'new_ask.html', {
+            'firstly': firstly,
+            'error': error,
             'form': form,
-            'tags' : paginate(request, models.Tag.objects.hottest()),
-            'users' : paginate(request, models.CustomUser.objects.by_rating()),
+            'tags' : paginate(request, models.Tag.objects.hottest())[:10],
+            'users' : paginate(request, models.CustomUser.objects.by_rating())[:10],
         })
 
 def signin(request):
+    last_page = request.GET['next']
+    if last_page == '/logout' or last_page == '/login':
+        last_page = '/'
+    error = False
     if request.method == 'POST':
-        form = UserLoginForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect(request.GET.get('next') if request.GET.get('next') != '' else '/')
-
-    else:
-        form = UserLoginForm()
-        logout(request)
-    #return redirect(request.GET.get('next') )
-    return render(request, 'login.html', {
-            'form': form,
-            'tags' : paginate(request, models.Tag.objects.hottest()),
-            'users' : paginate(request, models.CustomUser.objects.by_rating()),
-        })
-
-# class registration(generic.CreateView):
-# 	form_class = UserRegistrationForm
-# 	success_url = reverse_lazy('/')
-# 	template_name = 'registration.html'
-
-# def Wregistration(request):
-#     if request.method == 'POST':	
-#         form = UserRegistrationForm(request.POST, request.FILES)
-#         if form.is_valid():
-#             user = form.save()
-#             user.set_password(form.cleaned_data['password'])
-#             user.save()
-#             login(request, user)
-#             return redirect(request.GET.get('next') if request.GET.get('next') != '' else '/')
-#     else:
-#         form = UserRegistrationForm()
-#         logout(request)
-#     return render(request, 'registration.html', {
-#             'form': form,
-#             'tags' : paginate(request, models.Tag.objects.hottest()),
-#             'users' : paginate(request, models.CustomUser.objects.by_rating()),
-#         })
+        user = authenticate(username=request.POST['nickname'], password=request.POST['password'])
+        if user is not None:
+            login(request, user)  # Авторизуем пользователя
+            return redirect(last_page)
+        else:
+            error = True
+    return render(request, 'login.html',
+                    {'error': error,
+                    'last_page': last_page,
+                    'tags' : paginate(request, models.Tag.objects.hottest()),
+                    'users' : paginate(request, models.CustomUser.objects.by_rating()),
+    })
 
 def registration(request):
-    registered = False
     if request.method == 'POST':
         user_form = UserRegistrationForm(request.POST, request.FILES)
         print(user_form)
@@ -202,7 +196,6 @@ def registration(request):
             user = user_form.save()
             user.set_password(user.password)
             user.save()
-            registered = True
             login(request, user)
             return redirect(request.GET.get('next') if request.GET.get('next') != '' else '/')
         else:
@@ -210,8 +203,7 @@ def registration(request):
     else:
         user_form = UserRegistrationForm()
     return render(request,'registration.html',
-                          {'form':user_form,
-                          'registrate': registered,})
+                          {'form':user_form,})
 
 def signout(request):
     if not request.user.is_authenticated:
@@ -220,29 +212,9 @@ def signout(request):
     #return redirect(request.GET['from'])
     return redirect('/')
 
-class Questions(TemplateView):
-	"""docstring for Hot"""
-	template_name = "questions.html"
-
-class Registration(TemplateView):
-	"""docstring for Hot"""
-	template_name = "registration.html"
-
-class Settings(TemplateView):
-	"""docstring for Hot"""
-	template_name = "settings.html"
-
-class Login(TemplateView):
-	"""docstring for Hot"""
-	template_name = "login.html"
-
-class NewAsk(TemplateView):
-	"""docstring for Hot"""
-	template_name = "new_ask.html"
-
 
 def paginate(request, objects_list):
-    paginator = Paginator(objects_list, 10)
+    paginator = Paginator(objects_list, 30)
     page = request.GET.get('page')
     try:
         objects = paginator.page(page)
@@ -252,3 +224,48 @@ def paginate(request, objects_list):
         objects = paginator.page(paginator.num_pages)
 
     return objects
+
+@require_POST
+def like_question(request):
+    question_id = request.POST.get('question_id', '')
+    like_type = request.POST.get('like_type', '')
+    question =get_object_or_404(Question, pk=question_id)
+    if not question:
+        return JsonResponse({"status": "error"})
+
+    if (like_type == 'like'):
+        question.rating += 1
+    elif (like_type == 'dislike'):
+        question.rating -= 1
+    question.save()
+
+    return JsonResponse({"status": "ok"})
+
+@require_POST
+def like_answer(request):
+    answer_id = request.POST.get('answer_id', '')
+    like_type = request.POST.get('like_type', '')
+    answer =get_object_or_404(Answer, pk=answer_id)
+    if not answer:
+        return JsonResponse({"status": "error"})
+
+    if (like_type == 'like'):
+        answer.rating += 1
+    elif (like_type == 'dislike'):
+        answer.rating -= 1
+    answer.save()
+
+    return JsonResponse({"status": "ok"})
+
+
+@require_POST
+def approve_answer(request):
+    answer_id = request.POST.get('answer_id', '')
+    answer =get_object_or_404(Answer, pk=answer_id)
+    if not answer:
+        return JsonResponse({"status": "error"})
+
+    answer.approved = not answer.approved
+    answer.save()
+
+    return JsonResponse({"status": "ok"})

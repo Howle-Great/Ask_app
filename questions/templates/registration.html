@@ -20,7 +20,6 @@
 {% endblock %}  
 
 {% block userPost %}
-  {{registrate}}
   <form enctype="multipart/form-data" class="form-horizontal" action="/registration/?next={{ request.GET.next }}" method="post">
         {% csrf_token %}
         <div class="col-md-6">

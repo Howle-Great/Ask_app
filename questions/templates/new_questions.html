@@ -2,7 +2,17 @@
 
 {% block NamePage %}
   <div class="pb-3 mb-4 font-italic border-bottom row">
-        <h3 class="col-4">New Questions</h3>
-        <a href="{% url 'hot' id=1 %}" class="Hot_qeue">Hot Questions</a>
+        <h3 class="col-md-4">
+        	{% if title %}
+        	    {{title}}
+        	{% else %}
+        	    Вопросы
+        	{% endif %}
+        </h3>
+        <div class="btn-group" role="group" aria-label="Basic example">
+	        <a href="{% url 'new' %}" class="btn btn-outline-primary" style="width:243px">Новые</a>
+	        <a href="{% url 'top' %}" class="btn btn-outline-primary" style="width:243px">Рейтинг</a>
+	        <a href="{% url 'top' %}" class="btn btn-outline-primary" style="width:243px">Понравилось</a>
+    	</div>
   </div>
 {% endblock %}
